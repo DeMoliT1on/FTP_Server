@@ -26,16 +26,11 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.net.Inet4Address
 import java.net.NetworkInterface
+import kotlinx.android.synthetic.main.activity_main.*;
 
 class MainActivity : AppCompatActivity() {
 
-    private var display: TableLayout? = null
-    private var toggle: Button? = null
-    private var wifiStatus: TextView? = null
-    private var ipAddress: TextView? = null
-    private var networkType: TextView? = null
-    private var url: TextView? = null
-    private var qrCode: ImageView? = null
+
     private var isRunning = false
     private var wifi = false
     private var hotspot = false
@@ -55,19 +50,8 @@ class MainActivity : AppCompatActivity() {
 
         initDialogs()
         checkAndRequestPermissions()
-        initViews()
     }
 
-
-    private fun initViews() {
-        display = findViewById(R.id.display)
-        toggle = findViewById(R.id.startBtn)
-        wifiStatus = findViewById(R.id.wifiStatus)
-        ipAddress = findViewById(R.id.ipAddress)
-        networkType = findViewById(R.id.networkType)
-        url = findViewById(R.id.url)
-        qrCode = findViewById(R.id.qrCode)
-    }
 
     private fun initDialogs() {
         requestDialog = AlertDialog.Builder(this)
@@ -128,8 +112,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         isRunning = isServiceRunning()
-        toggle!!.setText(if (isRunning) R.string.stop_btn else R.string.start_btn)
-        display!!.visibility = if (isRunning) View.VISIBLE else View.GONE
+        startBtn.setText(if (isRunning) R.string.stop_btn else R.string.start_btn)
+        display.visibility = if (isRunning) View.VISIBLE else View.GONE
     }
 
     override fun onStop() {
@@ -143,47 +127,47 @@ class MainActivity : AppCompatActivity() {
         when (signal) {
             FTPService.FtpReceiverActions.STARTED -> {
                 Toast.makeText(applicationContext, "Service Started", Toast.LENGTH_SHORT).show()
-                toggle!!.setText(R.string.stop_btn)
-                display!!.visibility = View.VISIBLE
+                startBtn.setText(R.string.stop_btn)
+                display.visibility = View.VISIBLE
             }
             FTPService.FtpReceiverActions.FAILED_TO_START -> {
                 Toast.makeText(applicationContext, "Service Failed to start", Toast.LENGTH_SHORT).show()
-                toggle!!.setText(R.string.start_btn)
-                display!!.visibility = View.GONE
+                startBtn.setText(R.string.start_btn)
+                display.visibility = View.GONE
             }
             FTPService.FtpReceiverActions.STOPPED -> {
                 Toast.makeText(applicationContext, "Service Stopped", Toast.LENGTH_SHORT).show()
-                toggle!!.setText(R.string.start_btn)
-                display!!.visibility = View.GONE
+                startBtn.setText(R.string.start_btn)
+                display.visibility = View.GONE
                 isRunning = false
             }
         }
     }
 
     private fun connected() {
-        wifiStatus!!.text = "Connected"
+        wifiStatus.text = "Connected"
         do {
             ip = getIpAddress()
         } while (hotspot && ip == null)
         ipAddress!!.text = ip
         URL = "ftp://$ip:$PORT"
-        url!!.text = URL
+        url.text = URL
         val multiFormatWriter = MultiFormatWriter()
         try {
             val bitMatrix = multiFormatWriter.encode(URL, BarcodeFormat.QR_CODE, 200, 200)
             val bitmap = BarcodeEncoder.createBitmap(bitMatrix)
-            qrCode!!.setImageBitmap(bitmap)
+            qrCode.setImageBitmap(bitmap)
         } catch (e: Exception) {
         }
-        networkType!!.text = if (wifi) "Wifi" else "Wifi AP"
-        toggle!!.isEnabled = true
+        networkType.text = if (wifi) "Wifi" else "Wifi AP"
+        startBtn.isEnabled = true
     }
 
     private fun notConnected() {
-        wifiStatus!!.text = "Disconnected"
-        ipAddress!!.text = "NA"
-        networkType!!.text = "NA"
-        toggle!!.isEnabled = false
+        wifiStatus.text = "Disconnected"
+        ipAddress.text = "NA"
+        networkType.text = "NA"
+        startBtn.isEnabled = false
     }
 
     private fun startService() {
