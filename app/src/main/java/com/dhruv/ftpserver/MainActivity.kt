@@ -19,8 +19,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -152,13 +150,6 @@ class MainActivity : AppCompatActivity() {
         ipAddress!!.text = ip
         URL = "ftp://$ip:$PORT"
         url.text = URL
-        val multiFormatWriter = MultiFormatWriter()
-        try {
-            val bitMatrix = multiFormatWriter.encode(URL, BarcodeFormat.QR_CODE, 200, 200)
-            val bitmap = BarcodeEncoder.createBitmap(bitMatrix)
-            qrCode.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-        }
         networkType.text = if (wifi) "Wifi" else "Wifi AP"
         startBtn.isEnabled = true
     }
